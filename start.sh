@@ -1,14 +1,16 @@
 #!/bin/bash
-# Arrancar Ollama en background
-o
+# Arrancar Ollama
+ollama serve &
+SERVER_PID=$!
 
-llama serve &
+# Esperar a que el servidor esté listo
+for i in $(seq 1 30); do
+  curl -s http://localhost:10000/api/tags > /dev/null 2>&1 && break
+  sleep 2
+done
 
-# Esperar a que Ollama este listo
-sleep 5
-
-# Descargar el modelo (tinyllama es el mas liviano ~700MB)
+# Descargar modelo
 ollama pull tinyllama
 
-# Mantener el proceso vivo
-wait
+# Mantener vivo
+wait $SERVER_PID
