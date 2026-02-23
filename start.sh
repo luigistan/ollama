@@ -1,21 +1,17 @@
 #!/bin/bash
 
-# Arrancar Ollama en background
+echo "Iniciando servidor Ollama..."
 ollama serve &
 SERVER_PID=$!
 
-# Esperar a que Ollama esté realmente listo
-echo "Esperando que Ollama arranque..."
+echo "Esperando que Ollama esté listo..."
 until curl -s http://localhost:10000/api/tags > /dev/null 2>&1; do
+  echo "Ollama aún no responde, reintentando en 2 segundos..."
   sleep 2
-  echo "Esperando..."
 done
-echo "Ollama listo!"
 
-# Descargar el modelo
-echo "Descargando tinyllama..."
+echo "Ollama está listo. Descargando modelo tinyllama..."
 ollama pull tinyllama
-echo "Modelo descargado!"
 
-# Mantener el proceso vivo
+echo "Modelo descargado. Servidor corriendo en puerto 10000."
 wait $SERVER_PID
